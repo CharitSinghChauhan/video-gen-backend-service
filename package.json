@@ -1,0 +1,29 @@
+{
+  "name": "backend-service",
+  "module": "index.ts",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/express": "^5.0.6",
+    "drizzle-kit": "^1.0.0-beta.20",
+    "groq-sdk": "^1.1.2",
+    "tsx": "^4.21.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "private": true,
+  "scripts": {
+    "dev": "bun run --hot src/index.ts"
+  },
+  "type": "module",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "@types/cors": "^2.8.19",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "drizzle-orm": "^1.0.0-beta.20",
+    "express": "^5.2.1",
+    "pino": "^10.3.1",
+    "zod": "^4.3.6"
+  }
+}
