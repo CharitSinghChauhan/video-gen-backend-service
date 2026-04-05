@@ -1,14 +1,14 @@
 import type { Request, Response } from "express";
-import z, { json, ZodError } from "zod";
+import z from "zod";
 import { env } from "../config/env";
 import { systemPrompt } from "../prompts/system-prompt";
 import Groq from "groq-sdk";
 import { InternalServerError } from "../utils/app-error";
 import { sendSuccess } from "../utils/api-response";
 import { SessionService } from "../service/session-service";
-import { randomUUIDv7 } from "bun";
 import { MessageService } from "../service/message-service";
 import { VideoOutBoxService } from "../service/video-outbox-service";
+import { logger } from "../utils/logger";
 
 const chatBodyZodSchema = z.object({
   prompt: z.string().min(2, {
@@ -45,9 +45,17 @@ export const chatController = async (req: Request, res: Response) => {
 
   const isVideoGen = groqRes.choices[0]?.message?.content;
 
-  if (!isVideoGen) throw new InternalServerError();
+  if (!isVideoGen)
+    throw new InternalServerError(undefined, "isVideoGen is falsely");
 
-  const { intent, response, shouldGenerateVideo } = JSON.parse(isVideoGen);
+  logger.info({ isVideoGen }, "Received response from Groq AI");
+
+  // json parsing error
+  const {
+    intent,
+    response: groqResponse,
+    shouldGenerateVideo,
+  } = JSON.parse(isVideoGen);
 
   const zodParamRes = chatParamZodSchema.safeParse(req.params);
 
@@ -58,15 +66,16 @@ export const chatController = async (req: Request, res: Response) => {
   if (!sessionId) {
     const newSession = await new SessionService().create({
       title: prompt,
-      userId: parseInt(randomUUIDv7()),
+      userId: 1,
     });
 
     sessionId = newSession?.id;
   }
 
-  const newMessage = new MessageService().create({
+  const newMessage = await new MessageService().create({
     prompt,
     sessionId: sessionId as number,
+    response: groqResponse,
   });
 
   if (!shouldGenerateVideo) {
@@ -74,7 +83,7 @@ export const chatController = async (req: Request, res: Response) => {
       res,
       {
         intent,
-        response,
+        response: groqResponse,
         shouldGenerateVideo,
       },
       {
@@ -86,7 +95,7 @@ export const chatController = async (req: Request, res: Response) => {
 
   const result = await new VideoOutBoxService().create(
     {
-      userId: parseInt(randomUUIDv7()), // TODO: fix userId
+      userId: 1, // TODO: fix userId
       prompt,
     },
     "VIDEO_GENERATE",
@@ -95,7 +104,7 @@ export const chatController = async (req: Request, res: Response) => {
 
   // TODO: handle result
 
-  sendSuccess(res, null, {
+  return sendSuccess(res, null, {
     message: "generating video",
     statusCode: 200,
   });

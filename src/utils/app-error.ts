@@ -64,8 +64,8 @@ export class TooManyRequestsError extends AppError {
 }
 
 export class InternalServerError extends AppError {
-  constructor(message = "Something went wrong, Try again") {
-    super(message, 500, "INTERNAL_SERVER_ERROR");
+  constructor(message = "Something went wrong, Try again", details?: unknown) {
+    super(message, 500, "INTERNAL_SERVER_ERROR", details);
     this.name = "InternalServerError";
   }
 }

@@ -1,9 +1,9 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "fa47484f-93c2-422b-bac8-f698f897f03f",
+  "id": "e8504802-dd5f-4ccc-9a36-0b7c233330cb",
   "prevIds": [
-    "c71b2e41-a9a6-4c0e-9390-6afd11a7594a"
+    "00000000-0000-0000-0000-000000000000"
   ],
   "ddl": [
     {
@@ -91,7 +91,7 @@
     {
       "type": "text",
       "typeSchema": null,
-      "notNull": false,
+      "notNull": true,
       "dimensions": 0,
       "default": null,
       "generated": null,
@@ -169,7 +169,7 @@
     {
       "type": "text",
       "typeSchema": null,
-      "notNull": false,
+      "notNull": true,
       "dimensions": 0,
       "default": null,
       "generated": null,
@@ -927,7 +927,5 @@
       "entityType": "uniques"
     }
   ],
-  "renames": [
-    "public.messages.content->public.messages.response"
-  ]
+  "renames": []
 }

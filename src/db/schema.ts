@@ -127,7 +127,7 @@ export const messages = pgTable(
     videoId: integer("video_id").references(() => videos.id, {
       onDelete: "set null",
     }),
-    response: text("response"),
+    response: text("response").notNull(),
     prompt: text("prompt").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()

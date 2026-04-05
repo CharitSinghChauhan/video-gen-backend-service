@@ -3,7 +3,7 @@ CREATE TYPE "video_status" AS ENUM('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED
 CREATE TABLE "chat_sessions" (
 	"id" serial PRIMARY KEY,
 	"user_id" integer NOT NULL,
-	"title" text,
+	"title" text NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
@@ -12,7 +12,8 @@ CREATE TABLE "messages" (
 	"id" serial PRIMARY KEY,
 	"session_id" integer NOT NULL,
 	"video_id" integer,
-	"content" text NOT NULL,
+	"response" text NOT NULL,
+	"prompt" text NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint

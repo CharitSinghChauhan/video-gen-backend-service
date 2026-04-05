@@ -16,7 +16,10 @@ export class MessageService implements IMessageService {
   async create(message: NewMessage): Promise<Message> {
     const result = await db.insert(messages).values(message).returning();
     if (!result || result.length === 0) {
-      throw new InternalServerError();
+      throw new InternalServerError(
+        undefined,
+        "Message Service result falsely",
+      );
     }
     // TODO : error undefine
     return result[0]!;
@@ -39,7 +42,10 @@ export class MessageService implements IMessageService {
       .orderBy(messages.createdAt);
   }
 
-  async update(id: number, updates: Partial<NewMessage>): Promise<Message | null> {
+  async update(
+    id: number,
+    updates: Partial<NewMessage>,
+  ): Promise<Message | null> {
     const result = await db
       .update(messages)
       .set(updates)
@@ -50,6 +56,7 @@ export class MessageService implements IMessageService {
 
   async delete(id: number): Promise<boolean> {
     const result = await db.delete(messages).where(eq(messages.id, id));
+    if (!result.rowCount) return false;
     return result.rowCount > 0;
   }
 }

@@ -1,5 +1,6 @@
 import type { Response } from "express";
 import { env } from "../config/env";
+import { logger } from "./logger";
 
 export interface ApiMeta {
   page?: number;
@@ -70,11 +71,13 @@ export function sendError(
     details,
   } = options;
 
-  const isDev = env.NODE_ENV === "development";
+  logger.debug({ details }, "Sending error response");
+
+  const isProd = env.NODE_ENV === "production";
 
   let body;
 
-  if (isDev) {
+  if (isProd) {
     body = {
       message,
       success: false,

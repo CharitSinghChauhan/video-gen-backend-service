@@ -1,18 +1,24 @@
 import { db } from "../db";
-import { chatSessions,  type NewChatSession } from "../db/schema";
+import {
+  chatSessions,
+  type ChatSession,
+  type NewChatSession,
+} from "../db/schema";
 import { InternalServerError } from "../utils/app-error";
 
-export interface ISessionService {}
+export interface ISessionService {
+  create(chatSession: NewChatSession): Promise<ChatSession>;
+}
 
 export class SessionService implements ISessionService {
   async create(chatSession: NewChatSession) {
-    const result = await db
+    const [result] = await db
       .insert(chatSessions)
       .values(chatSession)
       .returning();
 
-    if (result.length <= 0) throw new InternalServerError();
+    if (!result) throw new InternalServerError(undefined, "session serive result falsely");
 
-    return result[0];
+    return result;
   }
 }

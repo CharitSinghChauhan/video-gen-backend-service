@@ -2,12 +2,17 @@ import express from "express";
 import cors from "cors";
 import { env } from "./config/env";
 import router from "./routes";
-import chatRouter from "./routes/chat-route"
+import chatRouter from "./routes/chat-route";
 import { errorMiddleware } from "./middleware/error-middleware";
+import { httpLogger, logger } from "./utils/logger";
 
 export const app = express();
 
+// HTTP request logging middleware
+app.use(httpLogger);
+
 app.use(express.json());
+
 // TODO : Read all the
 app.use(
   cors({
@@ -19,7 +24,6 @@ app.use(
 );
 
 app.use("/api", router);
-app.use("/api", chatRouter)
-
+app.use("/api", chatRouter);
 
 app.use(errorMiddleware);

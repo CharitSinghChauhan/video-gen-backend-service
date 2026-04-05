@@ -1,7 +1,8 @@
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import { ZodError } from "zod";
-import { AppError, UnprocessableError } from "../utils/app-error";
+import { AppError } from "../utils/app-error";
 import { sendError } from "../utils/api-response";
+import { logger } from "../utils/logger";
 
 export const errorMiddleware = (
   err: Error | AppError | ZodError,
@@ -9,8 +10,6 @@ export const errorMiddleware = (
   res: Response,
   _next: NextFunction,
 ): void => {
-  const requestId = (res.locals.requestId as string) || "unknown";
-
   if (err instanceof ZodError) {
     const formattedErrors = err.issues.map((issue) => ({
       path: issue.path.join("."),
@@ -19,36 +18,43 @@ export const errorMiddleware = (
 
     const message = "Validation failed";
 
+    logger.warn({ err, req }, "Validation error occurred");
+
     sendError(res, {
       message,
       statusCode: 422,
       code: "VALIDATION_ERROR",
       details: {
-        errors: formattedErrors,
-        issues: err.issues,
+        formattedErrors,
+        originalError: err.message,
+        stack: err.stack,
+        url: req.url,
+        method: req.method,
+        err: err,
       },
     });
-
     return;
   }
 
   if (err instanceof AppError) {
+    logger.warn({ err, req }, "Application error occurred");
+
     sendError(res, {
       message: err.message,
       statusCode: err.statusCode,
       code: err.code,
-      details: err.details,
+      details: {
+        originalError: err.message,
+        stack: err.stack,
+        url: req.url,
+        method: req.method,
+        err: err,
+      },
     });
     return;
   }
 
-  console.error("Unexpected error:", {
-    message: err.message,
-    stack: err.stack,
-    url: req.url,
-    method: req.method,
-    requestId,
-  });
+  logger.error({ err, req }, "Unexpected error occurred");
 
   return sendError(res, {
     message: err.message || "An unexpected error occurred",
@@ -59,6 +65,7 @@ export const errorMiddleware = (
       stack: err.stack,
       url: req.url,
       method: req.method,
+      err,
     },
   });
 };

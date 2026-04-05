@@ -15,6 +15,7 @@ async function startServer() {
       console.log(` Server running on port ${env.PORT}`);
     });
   } catch (error) {
+    // TODO : gracefuls shutdown
     console.error("Failed to start server:", error);
     process.exit(1);
   }
