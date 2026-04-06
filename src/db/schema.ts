@@ -20,6 +20,7 @@ export const videoStatusEnum = pgEnum("video_status", [
 export const outboxStatusEnum = pgEnum("outbox_status", [
   "PENDING",
   "PROCESSED",
+  "FAILED",
 ]);
 
 export const users = pgTable("users", {
@@ -71,6 +72,7 @@ export const outboxes = pgTable(
     videoId: integer("video_id")
       .notNull()
       .references(() => videos.id, { onDelete: "cascade" }),
+    error: text("error"),
     eventType: text("event_type").notNull(),
     payload: jsonb("payload").$type<Record<string, unknown>>(),
     status: outboxStatusEnum("status").notNull().default("PENDING"),

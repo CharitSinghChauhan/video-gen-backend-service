@@ -16,7 +16,8 @@
   },
   "private": true,
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "worker": "bun run --hot src/workers/index.ts"
   },
   "type": "module",
   "dependencies": {

@@ -16,3 +16,11 @@ const envSchema = z.object({
 });
 
 export const env = envSchema.parse(process.env);
+
+export const CDCConfigs = {
+  host: env.DB_HOST || "postgres-db",
+  port: env.DB_PORT || 5432,
+  database: env.DB_NAME || "mydb",
+  user: env.DB_USER || "postgres",
+  password: env.DB_PASSWORD || "postgres",
+};
