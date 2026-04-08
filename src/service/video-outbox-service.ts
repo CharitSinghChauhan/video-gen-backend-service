@@ -1,6 +1,5 @@
 import { db } from "../db";
 import { outboxes, videos, type NewVideo } from "../db/schema";
-import { eq, sql } from "drizzle-orm";
 import { InternalServerError } from "../utils/app-error";
 import { logger } from "../utils/logger";
 

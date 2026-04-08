@@ -1,5 +1,4 @@
 version: "3.8"
-
 services:
   postgres:
     image: postgres:17
@@ -28,6 +27,20 @@ services:
     restart: always
     ports:
       - "8080:8080"
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: redis-gui
+    restart: always
+    ports:
+      - "5540:5540"
 
 volumes:
   pgdata:
