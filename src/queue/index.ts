@@ -11,4 +11,3 @@ export const myQueue = new Queue("myqueue", {
 
 
 
-const worker = new Worker()

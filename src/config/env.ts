@@ -17,8 +17,10 @@ const envSchema = z.object({
   REDIS_PORT: z.coerce.number(),
 });
 
+// TODO : safe vs parse
 export const env = envSchema.parse(process.env);
 
+// TODO : add the zod validation
 export const CDCConfigs = {
   host: env.DB_HOST || "postgres-db",
   port: env.DB_PORT || 5432,

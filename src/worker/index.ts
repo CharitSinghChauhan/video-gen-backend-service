@@ -1,8 +1,9 @@
-import { eq } from "drizzle-orm";
+
 import { db } from "../db";
-import { outboxes } from "../db/schema";
+import { outboxes} from "../db/schema";
 import { logger } from "../utils/logger";
 import { myQueue } from "../queue";
+import { eq } from "drizzle-orm";
 
 export class PollingCDCWorker {
   public isRunning: boolean;
